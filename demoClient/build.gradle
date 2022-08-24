@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+    // Provide convenience executables for trying out the examples.
+    id 'application'
+    // ASSUMES GRADLE 5.6 OR HIGHER. Use plugin version 0.8.10 with earlier gradle versions
+    id 'com.google.protobuf' version '0.8.18'
+    // Generate IntelliJ IDEA's .idea & .iml project files
+    id 'idea'
+}
+
+// updating the version in our release process.
+def grpcVersion = '1.48.1'
+def protobufVersion = '3.21.1'
+def protocVersion = protobufVersion
+
+mainClassName = 'DemoClient'
+group 'org.example'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 11
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    // grpc dependencies
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    compileOnly "org.apache.tomcat:annotations-api:6.0.53"
+    // examples/advanced need this for JsonFormat
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    testImplementation "io.grpc:grpc-testing:${grpcVersion}"
+    // For use gRPCCurl to Test
+    implementation "io.grpc:grpc-services:${grpcVersion}"
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+    }
+    generateProtoTasks {
+        all()*.plugins { grpc {} }
+    }
+}
+
+jar {
+    // To Resolve Deplicate classpath Entry Error
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // Setting main method package root
+    manifest.mainAttributes("Main-Class" : "DemoClient")
+    // Include dependencies in build Jar
+    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
