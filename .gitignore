@@ -83,3 +83,6 @@ fabric.properties
 /demoServer/.gradle/
 /demoServer/build/
 /demoServer/build/classes/java/main/
+/GrpcSpecTestServer/.gradle/
+/GrpcSpecTestServer/build/
+/GrpcSpecTestServer/build/classes/java/main/
