@@ -1,3 +1,4 @@
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import io.grpc.Metadata;
@@ -9,8 +10,8 @@ import io.grpc.stub.StreamObserver;
 import io.grpc.tool.checktypespec.CheckReply;
 import io.grpc.tool.checktypespec.CheckRequest;
 import io.grpc.tool.checktypespec.CheckTypeSpecGrpc;
+import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +40,9 @@ class GrpcSpecTestServer {
                 System.out.println("----------------------WARN testID is not defined----------------------");
                 testId = "";
             }
-            Map<String, Object> result = new HashMap<>();
-            result.put(testId, writeMessage(req));
+            JSONObject result = new JSONObject();
+            result.put(testId, analyseMessage(req));
+
 
             CheckReply reply = CheckReply.newBuilder().setMessage(result.toString()).build();
             responseObserver.onNext(reply);
@@ -49,8 +51,8 @@ class GrpcSpecTestServer {
         }
     }
 
-    private static Map<String, Object> writeMessage(Message request) {
-        Map<String, Object> resultMap = new HashMap<>();
+    private static JSONObject analyseMessage (Message request) {
+        JSONObject result = new JSONObject();
         try {
             System.out.println("-----------START writeMessage-----------");
             for (Descriptors.FieldDescriptor fds : request.getDescriptorForType().getFields()) {
@@ -61,23 +63,23 @@ class GrpcSpecTestServer {
                     switch(fds.getName()) {
                         case "scalar_spec":
                             CheckRequest.ScalarSpec scalerSpec = (CheckRequest.ScalarSpec)request.getField(fds);
-                            resultMap.put("scalar_spec" ,fieldDespriptor(scalerSpec));
+                            result.put("scalar_spec" ,fieldDespriptor(scalerSpec));
                             break;
                         case "optional_spec":
                             CheckRequest.OptionalSpec optionalSpec = (CheckRequest.OptionalSpec)request.getField(fds);
-                            resultMap.put("optional_spec" ,fieldDespriptor(optionalSpec));
+                            result.put("optional_spec" ,fieldDespriptor(optionalSpec));
                             break;
                         case "wrapper_spec":
                             CheckRequest.WrapperSpec wrapperSpec = (CheckRequest.WrapperSpec)request.getField(fds);
-                            resultMap.put("wrapper_spec" ,fieldDespriptor(wrapperSpec));
+                            result.put("wrapper_spec" ,fieldDespriptor(wrapperSpec));
                             break;
                         case "oneof_spec":
                             CheckRequest.OneofSpec oneofSpec = (CheckRequest.OneofSpec)request.getField(fds);
-                            resultMap.put("oneof_spec" ,fieldDespriptor(oneofSpec));
+                            result.put("oneof_spec" ,fieldDespriptor(oneofSpec));
                             break;
                         case "repeated_spec":
                             CheckRequest.RepeatedSpec repeatedSpec = (CheckRequest.RepeatedSpec)request.getField(fds);
-                            resultMap.put("repeated_spec" ,fieldDespriptor(repeatedSpec));
+                            result.put("repeated_spec" ,fieldDespriptor(repeatedSpec));
                             break;
                     }
                 }
@@ -86,7 +88,34 @@ class GrpcSpecTestServer {
             e.printStackTrace();
         }
         System.out.println("-----------END writeMessage-----------");
-        return resultMap;
+        return result;
+    }
+
+    private static JSONObject fieldDespriptor(Message message){
+        JSONObject result = new JSONObject();
+        for (Descriptors.FieldDescriptor fds : message.getDescriptorForType().getFields()) {
+            if (fds.isRepeated()) {
+                if (fds.isMapField()) {
+                    Map<Object, Object> map = autoCast(message.getField(fds));
+                    Object fieldValue = map.toString();
+                    result.put(fds.getName(), fieldValue);
+                } else {
+                    List<Object> list = autoCast(message.getField(fds));
+                    Object fieldValue = list.toString();
+                    result.put(fds.getName(), fieldValue);
+                }
+            } else if (message.hasField(fds)) { // hasFieldがtrueにならない場合はval追加無し
+                // bytes型の場合は、contents値のみ取り出す
+                if (Descriptors.FieldDescriptor.Type.BYTES.equals(fds.getType())) {;
+                    ByteString fieldValue = autoCast(message.getField(fds));
+                    result.put(fds.getName(), fieldValue.toStringUtf8());
+                } else {
+                    Object fieldValue = message.getField(fds);
+                    result.put(fds.getName(), fieldValue);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -98,26 +127,5 @@ class GrpcSpecTestServer {
     public static <T> T autoCast(Object obj) {
         T castObj = (T) obj;
         return castObj;
-    }
-
-    private static Map<String, Object> fieldDespriptor(Message message){
-        Map<String, Object> kvMap = new HashMap<>();
-        for (Descriptors.FieldDescriptor fds : message.getDescriptorForType().getFields()) {
-            if (fds.isRepeated()) {
-                if (fds.isMapField()) {
-                    Map<Object, Object> map = autoCast(message.getField(fds));
-                    Object fieldValue = map.toString();
-                    kvMap.put(fds.getName(), fieldValue);
-                } else {
-                    List<Object> list = autoCast(message.getField(fds));
-                    Object fieldValue = list.toString();
-                    kvMap.put(fds.getName(), fieldValue);
-                }
-            } else if (message.hasField(fds)) { // hasFieldがtrueにならない場合はval追加無し
-                Object fieldValue = message.getField(fds);
-                kvMap.put(fds.getName(), fieldValue);
-            }
-        }
-        return kvMap;
     }
 }

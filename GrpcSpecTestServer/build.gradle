@@ -36,6 +36,8 @@ dependencies {
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
     // For use gRPCCurl to Test
     implementation "io.grpc:grpc-services:${grpcVersion}"
+    // Json
+    implementation 'org.json:json:20230227'
 }
 
 protobuf {
@@ -52,7 +54,7 @@ jar {
     // To Resolve Deplicate classpath Entry Error
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     // Setting main method package root
-    manifest.mainAttributes("Main-Class" : "DemoServer")
+    manifest.mainAttributes("Main-Class" : "GrpcSpecTestServer")
     // Include dependencies in build Jar
     from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
 }
