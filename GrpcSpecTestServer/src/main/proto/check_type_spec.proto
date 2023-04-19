@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.tool.checktypespec";
+
+package checktypespec;
+
+service CheckTypeSpec {
+  rpc UploadCheckResult (CheckRequest) returns (CheckReply) {}
+}
+
+message CheckRequest {
+  ScalarSpec scalar_spec = 1;
+  OptionalSpec optional_spec = 2;
+  WrapperSpec wrapper_spec = 3;
+  OneofSpec oneof_spec =4;
+  RepeatedSpec repeated_spec = 5;
+
+  // Scalar
+  message ScalarSpec {
+    string str = 1;
+    int32  int32 = 2;
+    bool  bool = 3;
+    bytes  bytes = 4;
+    Enum enum = 5;
+  }
+  // Optional
+  message OptionalSpec {
+    optional string str = 1;
+    optional int32 int32 = 2;
+    optional bool bool = 3;
+    optional bytes bytes = 4;
+    optional Enum enum = 5;
+  }
+  //　Wrapper
+  message WrapperSpec {
+    google.protobuf.StringValue str = 1;
+    google.protobuf.Int32Value int32 = 2;
+    google.protobuf.BoolValue bool = 3;
+    google.protobuf.BytesValue bytes = 4;
+    // enumはwrapper非対応
+  }
+  //　Oneof
+  message OneofSpec {
+    oneof one_str {string str = 1;}
+    oneof one_int32 {int32 int32 = 2;}
+    oneof one_bool {bool bool = 3;}
+    oneof one_bytes {bytes bytes = 4;}
+    oneof one_enum {Enum enum = 5;}
+  }
+  // Repeated
+  message RepeatedSpec {
+    repeated string str = 1;
+    repeated int32 int32 = 2;
+    repeated bool bool = 3;
+    repeated bytes bytes = 4;
+    repeated Enum enum = 5;
+  }
+
+  enum Enum {
+    NOT_SPECIFIED = 0;
+    SPECIFIED = 1;
+  }
+}
+
+message CheckReply {
+  string message = 1;
+}
