@@ -44,9 +44,15 @@ protobuf {
     protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
     plugins {
         grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+        doc { artifact = "io.github.pseudomuto:protoc-gen-doc:1.5.1" }
     }
     generateProtoTasks {
-        all()*.plugins { grpc {} }
+        all()*.plugins {
+            grpc {}
+            doc {
+                option 'html,Vehicle_Communication_Interface.html'
+            }
+        }
     }
 }
 
@@ -65,6 +71,7 @@ sourceSets {
         java {
             srcDirs 'build/generated/source/proto/main/grpc'
             srcDirs 'build/generated/source/proto/main/java'
+            srcDirs 'build/generated/source/proto/main/doc'
         }
     }
 }

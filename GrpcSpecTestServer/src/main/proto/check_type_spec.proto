@@ -25,6 +25,7 @@ message CheckRequest {
     bool  bool = 3;
     bytes  bytes = 4;
     Enum enum = 5;
+    Message message = 6;
   }
   // Optional
   message OptionalSpec {
@@ -33,6 +34,7 @@ message CheckRequest {
     optional bool bool = 3;
     optional bytes bytes = 4;
     optional Enum enum = 5;
+    optional Message message = 6;
   }
   //　Wrapper
   message WrapperSpec {
@@ -40,15 +42,34 @@ message CheckRequest {
     google.protobuf.Int32Value int32 = 2;
     google.protobuf.BoolValue bool = 3;
     google.protobuf.BytesValue bytes = 4;
-    // enumはwrapper非対応
+    // enum,messageはwrapper非対応
   }
   //　Oneof
   message OneofSpec {
-    oneof one_str {string str = 1;}
-    oneof one_int32 {int32 int32 = 2;}
-    oneof one_bool {bool bool = 3;}
-    oneof one_bytes {bytes bytes = 4;}
-    oneof one_enum {Enum enum = 5;}
+    oneof one_str {
+      string str_primary = 1;
+      string str_secondary = 2;
+    }
+    oneof one_int32 {
+      int32 int32_primary = 3;
+      int32 int32_secondary = 4;
+    }
+    oneof one_bool {
+      bool bool_primary = 5;
+      bool bool_secondary = 6;
+    }
+    oneof one_bytes {
+      bytes bytes_primary = 7;
+      bytes bytes_secondary = 8;
+    }
+    oneof one_enum {
+      Enum enum_primary = 9;
+      Enum enum_secondary = 10;
+    }
+    oneof one_message {
+      Message message_primary = 11;
+      Message message_secondary = 12;
+    }
   }
   // Repeated
   message RepeatedSpec {
@@ -57,11 +78,16 @@ message CheckRequest {
     repeated bool bool = 3;
     repeated bytes bytes = 4;
     repeated Enum enum = 5;
+    repeated  Message message = 6;
   }
 
   enum Enum {
     NOT_SPECIFIED = 0;
     SPECIFIED = 1;
+  }
+  message Message {
+    string str = 1;
+    int32 int32 = 2;
   }
 }
 
