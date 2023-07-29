@@ -1,0 +1,23 @@
+{
+  "scalarSpec": {
+    "str": "",
+    "int32": 0,
+    "bool": false,
+    "bytes": "",
+    "enum": "NOT_SPECIFIED"
+  },
+  "optionalSpec": {
+  },
+  "wrapperSpec": {
+  },
+  "oneofSpec": {
+  },
+  "repeatedSpec": {
+    "str": [],
+    "int32": [],
+    "bool": [],
+    "bytes": [],
+    "enum": [],
+    "message": []
+  }
+}

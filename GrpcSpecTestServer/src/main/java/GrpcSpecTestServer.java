@@ -2,6 +2,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import interceptor.getHeadersInterceptor;
 import io.grpc.Metadata;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -19,6 +20,8 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static interceptor.getHeadersInterceptor.TRAILER_HOLDER_KEY;
 
 class GrpcSpecTestServer {
 
@@ -40,7 +43,7 @@ class GrpcSpecTestServer {
         public void uploadCheckResult(CheckRequest req, StreamObserver<CheckReply> responseObserver) {
                 System.out.println("----------------------Received Request----------------------");
             try {
-                Metadata metadata = HeaderCarrier.getMetadata();
+                Metadata metadata = TRAILER_HOLDER_KEY.get();
                 String testId = metadata.get(Metadata.Key.of("x-test-id", Metadata.ASCII_STRING_MARSHALLER));
                 if (testId == null) {
                     System.out.println("----------------------WARN testID is not defined----------------------");
