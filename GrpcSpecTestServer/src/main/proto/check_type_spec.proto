@@ -36,7 +36,7 @@ message CheckRequest {
     optional Enum enum = 5;
     optional Message message = 6;
   }
-  //　Wrapper
+  // Wrapper
   message WrapperSpec {
     google.protobuf.StringValue str = 1;
     google.protobuf.Int32Value int32 = 2;
@@ -44,7 +44,7 @@ message CheckRequest {
     google.protobuf.BytesValue bytes = 4;
     // enum,messageはwrapper非対応
   }
-  //　Oneof
+  // Oneof
   message OneofSpec {
     oneof one_str {
       string str_primary = 1;

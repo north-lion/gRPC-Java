@@ -1,0 +1,55 @@
+{
+  "scalarSpec": {
+    "str": "hoge",
+    "int32": 1,
+    "bool": true,
+    "bytes": "AAE=",
+    "enum": "SPECIFIED",
+    "message": {
+      "str": "fuga",
+      "int32": 0
+    }
+  },
+  "optionalSpec": {
+    "str": "hoge",
+    "int32": 1,
+    "bool": true,
+    "bytes": "AAE=",
+    "enum": "SPECIFIED",
+    "message": {
+      "str": "fuga",
+      "int32": 0
+    }
+  },
+  "wrapperSpec": {
+    "str": "hoge",
+    "int32": 1,
+    "bool": true,
+    "bytes": "AAE="
+  },
+  "oneofSpec": {
+    "strPrimary": "hoge",
+    "int32Primary": 1,
+    "boolPrimary": true,
+    "bytesPrimary": "AAE=",
+    "enumPrimary": "SPECIFIED",
+    "messagePrimary": {
+      "str": "fuga",
+      "int32": 0
+    }
+  },
+  "repeatedSpec": {
+    "str": ["", "fuga"],
+    "int32": [0, 1],
+    "bool": [false, true],
+    "bytes": ["", "AAE="],
+    "enum": ["NOT_SPECIFIED", "SPECIFIED"],
+    "message": [{
+      "str": "",
+      "int32": 0
+    }, {
+      "str": "hoge",
+      "int32": 0
+    }]
+  }
+}

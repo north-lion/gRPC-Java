@@ -4,14 +4,22 @@
     "int32": 0,
     "bool": false,
     "bytes": "",
-    "enum": "NOT_SPECIFIED"
+    "enum": "NOT_SPECIFIED",
+    "message": {
+      "str": "",
+      "int32": 0
+    }
   },
   "optionalSpec": {
     "str": "",
     "int32": 0,
     "bool": false,
     "bytes": "",
-    "enum": "NOT_SPECIFIED"
+    "enum": "NOT_SPECIFIED",
+    "message": {
+      "str": "",
+      "int32": 0
+    }
   },
   "wrapperSpec": {
     "str": "",
@@ -22,7 +30,13 @@
   "oneofSpec": {
     "strPrimary": "",
     "int32Primary": 0,
-    "boolPrimary": false
+    "boolPrimary": false,
+    "bytesPrimary": "",
+    "enumPrimary": "NOT_SPECIFIED",
+    "messagePrimary": {
+      "str": "",
+      "int32": 0
+    }
   },
   "repeatedSpec": {
     "str": [],
